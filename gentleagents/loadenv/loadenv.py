@@ -8,3 +8,6 @@ load_dotenv(ENV_PATH)
 
 
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+SENDER_EMAIL=os.getenv('SENDER_EMAIL')
+SENDER_PASSWORD=os.getenv('SENDER_PASSWORD')
+GROQ_API_KEY=os.getenv('GROQ_API_KEY')
