@@ -4,9 +4,9 @@ GentleAgents is a simple AI agent framework built as a **practice project** by *
 
 ## **Inspiration**
 This project draws inspiration from various AI agent libraries, including:
-- [smol-agents (Hugging Face)](https://huggingface.co/smol-agents)
-- [phidata](https://github.com/phidatahq/phidata)
-- [CrewAI](https://github.com/joaomdmoura/crewai)
+- [smol-agents (Hugging Face)](https://huggingface.co/docs/smolagents/en/index)
+- [phidata](https://docs.phidata.com/)
+- [CrewAI](https://www.crewai.com/)
 - And other similar frameworks.
 
 ## **What This Is**
