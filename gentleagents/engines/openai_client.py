@@ -1,13 +1,13 @@
 import openai
 import time
 
-from gentleagents.loadenv.loadenv import OPENAI_API_KEY, GROQ_API_KEY
+from gentleagents.loadenv.loadenv import OPENAI_API_KEY, GROQ_API_KEY, GROQ_API_URL
 
 
 MAX_RETRIES = 3  
 RETRY_DELAY = 2  
 
-def interact(system_prompt, user_message, tools=None, model="gpt-4-turbo"):
+def interact(system_prompt, user_message, tools=None, model=None):
     """
     Sends a message to OpenAI's GPT model and returns the response.
 
@@ -29,6 +29,16 @@ def interact(system_prompt, user_message, tools=None, model="gpt-4-turbo"):
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_message}
     ]
+    
+    provider = model.split(":")[0] if ":" in model else model
+    model = model.split(":")[1] if ":" in model else model
+    
+
+    if provider == "GROQ":
+        client = openai.OpenAI(base_url=GROQ_API_URL, api_key=GROQ_API_KEY)
+    
+    elif provider == "OPENAI":
+        client = openai.OpenAI()  
 
     params = {
         "model": model,
@@ -38,11 +48,7 @@ def interact(system_prompt, user_message, tools=None, model="gpt-4-turbo"):
     if tools:
         params["tools"] = tools  
         params["tool_choice"] = "auto"
-        
 
-
-    if model == "llama-3.3-70b-versatile" or "llama-3.1-8b-instant":
-        client = openai.OpenAI(base_url="https://api.groq.com/openai/v1", api_key=GROQ_API_KEY)  
 
     for attempt in range(1, MAX_RETRIES + 1):
         try:

@@ -6,7 +6,7 @@ import json
 from gentleagents.agents.helper import get_function_parameters, format_final_response
 
 class Agent:
-    def __init__(self, name, role, tools=None, model="gpt-4-turbo"):
+    def __init__(self, name, role, tools=None, model = None):
         """
         Initialize an AI Agent.
 
