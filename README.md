@@ -61,6 +61,13 @@ python -m gentleagents.agents.test_agent
 ```
 At the project root.
 
+### Expected Response
+
+```
+Tool 'add_numbers' executed successfully: result=12 message='Task completed with tool successfully.'
+Tool 'sub_numbers' executed successfully: result=11 message='Task completed with tool successfully.'
+```
+
 ## **Acknowledgments**
 Special thanks to **Laiba Batool** for contributing and helping with development.
 
