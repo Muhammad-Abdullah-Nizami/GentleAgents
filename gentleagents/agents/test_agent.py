@@ -29,14 +29,14 @@ def test_agent():
                 role="""You are an assistant that doesn't perform any tasks if they cant
                 be done by the tools provided to you.""",
                 tools={"add_numbers": add_numbers, "sub_numbers": sub_numbers},
-                model = "gpt-4-turbo")
+                model = "llama-3.1-8b-instant")
 
     response = agent.start_agent("Can you add 5 and 7? And also subtract 9 from 20")
     print(response)
 
 test_agent()
 
-#TO DO: REMOVE COMMENTS
+#TO DO: REMOVE COMMENTS, ADD PROPER HANDLING FOR WHEN WE CHANGE ENGINES.
 #For Laiba
 #Run this test using python -m gentleagents.agents.test_agent at the project root
 #root is at /GentleAgent
