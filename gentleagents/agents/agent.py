@@ -2,8 +2,9 @@ from gentleagents.engines.openai_client import interact
 from gentleagents.validations.models import ToolResponse
 from pydantic import ValidationError
 from typing import Callable, Dict, Any, get_type_hints
-import inspect
 import json
+from gentleagents.agents.helper import get_function_parameters, format_final_response
+
 class Agent:
     def __init__(self, name, role, tools=None, model="gpt-4-turbo"):
         """
@@ -22,7 +23,7 @@ class Agent:
         self.chat_history = []  
 
     def start_agent(self, user_message: str) -> str:
-        """Starts the agent, processes user input, and handles errors properly."""
+        """Starts the agent, processes user input (including tool calls), then issues a follow‐up call to provide a general summary answer."""
         try:
             self.chat_history.append({"role": "user", "content": user_message})
 
@@ -34,7 +35,7 @@ class Agent:
                         "function": {
                             "name": name,
                             "description": func.__doc__ or "No description provided.",
-                            "parameters": self.get_function_parameters(func)
+                            "parameters": get_function_parameters(func)
                         }
                     })
                 except Exception as e:
@@ -51,8 +52,9 @@ class Agent:
             except Exception as e:
                 return f"Error communicating with AI model: {e}"
 
+            # print(f"Full response: {response}")
             message = response.choices[0].message
-            self.chat_history.append({"role": "assistant", "content": message.content})
+            self.chat_history.append({"role": "assistant", "content": message.content if message.content else ""})
 
             if not message.tool_calls:
                 return message.content  
@@ -73,10 +75,9 @@ class Agent:
                     if not isinstance(function_args, dict):
                         raise TypeError(f"Expected dictionary for function arguments, got {type(function_args)}")
 
-                    # Execute tool
                     result = self.tools[function_name](**function_args)
-                    return_type = get_type_hints(self.tools[function_name])["return"]
-
+                    type_hints = get_type_hints(self.tools[function_name])
+                    return_type = type_hints.get("return", type(None))
                     validated_response = ToolResponse[return_type](result=result, message="Task completed with tool successfully.")
                     responses.append(f"Tool '{function_name}' executed successfully: {validated_response}")
 
@@ -87,74 +88,30 @@ class Agent:
                 except Exception as e:
                     responses.append(f"Unexpected error during execution of '{function_name}': {e}")
 
-            return "\n".join(responses)
+            tool_responses = "\n".join(responses)
+            self.chat_history.append({"role": "assistant", "content": tool_responses})
 
+            summary_prompt = (
+                "Based on the conversation so far and the actions taken (including the tool outputs below),"
+                "please provide what steps you took, which tools you used, and include a polite, short, concise general answer IF my query contains something that wasn't processed by the tools..\n\n"
+                f"Conversation history:\n{self.chat_history}\n\n"
+                "Final answer:"
+            )
+
+            try:
+                final_response = interact(
+                    system_prompt=f"You are {self.name}, a {self.role}.",
+                    user_message=summary_prompt,
+                    tools=None,
+                    model=self.model
+                )
+            except Exception as e:
+                return f"Error communicating with AI model for final response: {e}"
+
+            final_message = final_response.choices[0].message.content
+            self.chat_history.append({"role": "assistant", "content": final_message})
+
+            return f"{format_final_response(tool_responses)}\n\n{final_message}"
         except Exception as e:
             return f"Critical error in agent execution: {e}"
 
-
-    def python_type_to_json_schema(self, py_type: type) -> Dict[str, Any]:
-        """Convert a Python type to a JSON Schema snippet."""
-        try:
-            mapping = {
-                int: {"type": "integer"},
-                float: {"type": "number"},
-                str: {"type": "string"},
-                bool: {"type": "boolean"},
-            }
-
-            if py_type in mapping:
-                return mapping[py_type]
-
-            print(f"Warning: Unsupported type '{py_type}'. Defaulting to 'string'.")
-            return {"type": "string"}
-
-        except Exception as e:
-            print(f"Error converting Python type '{py_type}' to JSON Schema: {e}")
-            return {"type": "string"}
-
-    def get_function_parameters(self, func: Callable) -> Dict[str, Any]:
-        """
-        Extracts parameters from a function and returns a JSON Schema.
-
-        Returns a schema like:
-        {
-            "type": "object",
-            "properties": {
-                "a": {"type": "integer"},
-                "b": {"type": "integer"}
-            },
-            "required": ["a", "b"]
-        }
-        """
-        try:
-            signature = inspect.signature(func)
-            properties = {}
-            required = []
-
-            for name, param in signature.parameters.items():
-                try:
-                    if param.annotation is inspect._empty:
-                        json_type = {"type": "string"}
-                    else:
-                        json_type = self.python_type_to_json_schema(param.annotation)
-
-                    properties[name] = json_type
-
-                    if param.default is inspect._empty:
-                        required.append(name)
-
-                except Exception as e:
-                    print(f"Error processing parameter '{name}' in function '{func.__name__}': {e}")
-                    properties[name] = {"type": "string"}  
-
-            schema = {"type": "object", "properties": properties}
-
-            if required:
-                schema["required"] = required
-
-            return schema
-
-        except Exception as e:
-            print(f"Error extracting function signature for '{func}': {e}")
-            return {"type": "object", "properties": {}} 
