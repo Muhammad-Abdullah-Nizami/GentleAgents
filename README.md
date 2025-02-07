@@ -63,11 +63,27 @@ agent = Agent(
     name="Assistant",
     role="You are an assistant that performs tasks only with the tools provided.",
     tools={"add_numbers": add_numbers, "sub_numbers": sub_numbers},
-    model="gpt-4-turbo"
+    model = "OPENAI:gpt-4-turbo")
+
+    #more examples below:
+    #model = "GROQ:llama-3.3-70b-versatile")
+    #model = "GROQ:llama-3.3-70b-specdec")
+
+    #include provider then model
+    #only OPENAI and GROQ supported for now
 )
 
 response = agent.start_agent("Can you add 5 and 7? And also subtract 9 from 20?")
 print(response)
+```
+## **Place your API keys in the env folder in a .env.development file**
+example .env.development file:
+```python
+OPENAI_API_KEY="OPENAI_KEY_IF_USING_OPENAI"
+SENDER_EMAIL="OPTIONAL_FOR_EMAIL_EXAMPLE_TOOL"
+SENDER_PASSWORD="OPTIONAL_FOR_EMAIL_EXAMPLE_TOOL"
+GROQ_API_KEY="GROQ_KEY_IF_USING_GROQ"
+GROQ_API_URL="https://api.groq.com/openai/v1"
 ```
 
 ## **Running Tests**
@@ -83,9 +99,6 @@ At the project root.
 Tool 'add_numbers' executed successfully: result=12 message='Task completed with tool successfully.'
 Tool 'sub_numbers' executed successfully: result=11 message='Task completed with tool successfully.'
 ```
-
-## **Acknowledgments**
-Special thanks to **Laiba Batool** for contributing and helping with development.
 
 ## **License**
 This project is open-source but intended for learning and experimentation. Feel free to explore and modify, but use proper frameworks for real-world applications.
