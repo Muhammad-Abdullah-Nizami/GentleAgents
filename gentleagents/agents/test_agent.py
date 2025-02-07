@@ -31,9 +31,8 @@ def test_agent():
                 tools={"add_numbers": add_numbers, "sub_numbers": sub_numbers},
                 model = "gpt-4-turbo")
 
-    response2 = agent.start_agent("Can you add 5 and 7? And also subtract 9 from 20")
-    # print(f"Function Call Response: {response2}")
-    print(response2)
+    response = agent.start_agent("Can you add 5 and 7? And also subtract 9 from 20")
+    print(response)
 
 test_agent()
 
