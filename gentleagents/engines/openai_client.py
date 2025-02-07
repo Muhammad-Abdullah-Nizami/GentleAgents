@@ -20,7 +20,7 @@ def interact(system_prompt, user_message, tools=None, model="gpt-4-turbo"):
     Returns:
         dict: The response from OpenAI API, or None if an error occurs.
     """
-    if not OPENAI_API_KEY:
+    if not OPENAI_API_KEY and model == "gpt-4-turbo":
         raise ValueError("OPENAI_API_KEY is not set. Please configure your API key.")
 
     openai.api_key = OPENAI_API_KEY
@@ -39,7 +39,8 @@ def interact(system_prompt, user_message, tools=None, model="gpt-4-turbo"):
         params["tools"] = tools  
         params["tool_choice"] = "auto"
 
-    client = openai.OpenAI()  
+    if model == "llama-3.1-8b-instant":
+        client = openai.OpenAI(base_url="https://api.groq.com/openai/v1", api_key="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")  
 
     for attempt in range(1, MAX_RETRIES + 1):
         try:
