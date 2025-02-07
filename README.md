@@ -1,6 +1,6 @@
 # GentleAgents
 
-GentleAgents is a simple AI agent framework built as a **practice project** by **Muhammad Abdullah Nizami**. This is **not** a production-ready library but rather a minimal implementation to explore AI agent architectures.
+GentleAgents is a simple AI agent framework built as a **learning project** by **Muhammad Abdullah Nizami** to understand AI Agent workflows. This is **not** a production-ready library but rather a minimal implementation to explore AI agent architectures.
 
 ## **Inspiration**
 This project draws inspiration from various AI agent libraries, including:
