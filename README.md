@@ -36,11 +36,27 @@ Here’s an example of how to use **GentleAgents**:
 from gentleagents.agents.agent import Agent
 
 def add_numbers(a: int, b: int) -> int:
-    """Adds two numbers."""
+    """Use this function to add two numbers.
+    
+    Args:
+        a: int: The first number
+        b: int: The second number
+
+    Returns:
+        int: sum of a + b
+    """
     return a + b
 
 def sub_numbers(a: int, b: int) -> int:
-    """Subtracts two numbers."""
+    """Use this function to subtract two numbers.
+    
+    Args:
+        a: int: The first number
+        b: int: The second number
+
+    Returns:
+        int: result of a - b
+    """
     return a - b
 
 agent = Agent(
