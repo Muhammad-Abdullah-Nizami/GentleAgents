@@ -1,2 +1,2 @@
 # GentleAgents
-Practic Project for implementing AI workflows.
+Practice Project for implementing AI workflows.
