@@ -27,7 +27,7 @@ def sub_numbers(a: int, b: int) -> int:
     """
     return a - b
 
-def send_email(recipient: str, subject: str, content: str):
+def send_email(recipient: str, subject: str, content: str) -> str: 
     """Use this function to send an email.
 
     Args:
@@ -35,7 +35,7 @@ def send_email(recipient: str, subject: str, content: str):
         subject:str: the email subject
         content:str: the email body
     """
-
+    
     sender_email = SENDER_EMAIL
     sender_password = SENDER_PASSWORD
 
@@ -46,6 +46,14 @@ def send_email(recipient: str, subject: str, content: str):
 
     message.attach(MIMEText(content, "plain"))
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(sender_email, sender_password)
-        server.sendmail(sender_email, recipient, message.as_string())
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender_email, sender_password)
+            server.sendmail(sender_email, recipient, message.as_string())
+        
+        status = f"Successfully sent email to {recipient}"
+        return status
+    except Exception as e:
+        print(f"Error in Email tool: {str(e)}")
+        status = "Failed to send email."
+        return status
