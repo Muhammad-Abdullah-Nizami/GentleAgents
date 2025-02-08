@@ -20,10 +20,7 @@ def interact(system_prompt, user_message, tools=None, model=None):
     Returns:
         dict: The response from OpenAI API, or None if an error occurs.
     """
-    if not OPENAI_API_KEY and model == "gpt-4-turbo":
-        raise ValueError("OPENAI_API_KEY is not set. Please configure your API key.")
 
-    openai.api_key = OPENAI_API_KEY
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -35,9 +32,14 @@ def interact(system_prompt, user_message, tools=None, model=None):
     
 
     if provider == "GROQ":
+        if not GROQ_API_KEY or not GROQ_API_URL:
+            raise ValueError("GROQ_API_KEY or GROQ_API_URL is not set. Please configure your API key and the Groq Api Url.")
         client = openai.OpenAI(base_url=GROQ_API_URL, api_key=GROQ_API_KEY)
     
     elif provider == "OPENAI":
+        if not OPENAI_API_KEY :
+            raise ValueError("OPENAI_API_KEY is not set. Please configure your API key.")
+        openai.api_key = OPENAI_API_KEY
         client = openai.OpenAI()  
 
     params = {

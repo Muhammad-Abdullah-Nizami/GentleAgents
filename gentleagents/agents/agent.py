@@ -4,6 +4,7 @@ from pydantic import ValidationError
 from typing import Callable, Dict, Any, get_type_hints
 import json
 from gentleagents.agents.helper import get_function_parameters, format_final_response
+from gentleagents.queries.query import get_agent_summary
 
 class Agent:
     def __init__(self, name, role, tools=None, model = None):
@@ -14,7 +15,7 @@ class Agent:
             name (str): The agent's name.
             role (str): The agent's role (helps define its behavior).
             tools (list, optional): Functions the agent can use (default: None).
-            model (str, optional): The model to use for chat (default: GPT-4-turbo).
+            model (str): The model to use as the engine
         """
         self.name = name
         self.role = role
@@ -23,7 +24,6 @@ class Agent:
         self.chat_history = []  
 
     def start_agent(self, user_message: str) -> str:
-        """Starts the agent, processes user input (including tool calls), then issues a follow‐up call to provide a general summary answer."""
         try:
             self.chat_history.append({"role": "user", "content": user_message})
 
@@ -52,7 +52,6 @@ class Agent:
             except Exception as e:
                 return f"Error communicating with AI model: {e}"
 
-            # print(f"Full response: {response}")
             message = response.choices[0].message
             self.chat_history.append({"role": "assistant", "content": message.content if message.content else ""})
 
@@ -91,12 +90,7 @@ class Agent:
             tool_responses = "\n".join(responses)
             self.chat_history.append({"role": "assistant", "content": tool_responses})
 
-            summary_prompt = (
-                "Based on the conversation so far and the actions taken (including the tool outputs below),"
-                "please provide what steps you took, which tools you used, and include a polite, short, concise general answer IF my query contains something that wasn't processed by the tools..\n\n"
-                f"Conversation history:\n{self.chat_history}\n\n"
-                "Final answer:"
-            )
+            summary_prompt = get_agent_summary(self.chat_history)
 
             try:
                 final_response = interact(
@@ -111,6 +105,7 @@ class Agent:
             final_message = final_response.choices[0].message.content
             self.chat_history.append({"role": "assistant", "content": final_message})
 
+            print(f"{format_final_response(tool_responses)}\n\n{final_message}")
             return f"{format_final_response(tool_responses)}\n\n{final_message}"
         except Exception as e:
             return f"Critical error in agent execution: {e}"

@@ -18,7 +18,7 @@ def test_agent():
     # response = agent.start_agent("Can you subtract 5 from 7?")
     # response = agent.start_agent("Can you add 5 and 7? And also subtract 9 from 20 thanks man also email hi to abdullah_nizami@live.com")
 
-    print(response)
+    # print(response)
 
 test_agent()
 
