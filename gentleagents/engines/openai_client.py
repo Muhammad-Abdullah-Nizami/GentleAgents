@@ -1,11 +1,13 @@
 import openai
 import time
-
+import sys
 from gentleagents.loadenv.loadenv import OPENAI_API_KEY, GROQ_API_KEY, GROQ_API_URL
 
 
 MAX_RETRIES = 3  
 RETRY_DELAY = 2  
+RED = "\033[91m" 
+RESET = "\033[0m"  
 
 def interact(system_prompt, user_message, tools=None, model=None):
     """
@@ -30,15 +32,18 @@ def interact(system_prompt, user_message, tools=None, model=None):
     provider = model.split(":")[0] if ":" in model else model
     model = model.split(":")[1] if ":" in model else model
     
-
     if provider == "GROQ":
         if not GROQ_API_KEY or not GROQ_API_URL:
-            raise ValueError("GROQ_API_KEY or GROQ_API_URL is not set. Please configure your API key and the Groq Api Url.")
+            sys.stderr.write(f"{RED} ERROR: GROQ_API_KEY or GROQ_API_URL is not set. Please configure your API key and the Groq API URL.{RESET}\n")
+            sys.exit(1)  
         client = openai.OpenAI(base_url=GROQ_API_URL, api_key=GROQ_API_KEY)
+
     
     elif provider == "OPENAI":
-        if not OPENAI_API_KEY :
-            raise ValueError("OPENAI_API_KEY is not set. Please configure your API key.")
+        if not OPENAI_API_KEY:
+            sys.stderr.write(f"{RED} ERROR: OPENAI_API_KEY is not set. Please configure your API key.{RESET}\n")
+            sys.exit(1)  
+            raise ValueError("")
         openai.api_key = OPENAI_API_KEY
         client = openai.OpenAI()  
 

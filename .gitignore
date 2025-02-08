@@ -3,3 +3,6 @@ venv/
 venv
 venv/*
 **/__pycache__/
+.env
+gentleagents.egg-info/
+build/
