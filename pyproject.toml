@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gentleagents"
+version = "0.1.0"
+description = "A framework for managing AI agents. Not for production"
+authors = [{name = "Muhammad Abdullah Nizami", email = "abdullah_nizami@iciltek.com"}]
+license = {text = "MIT License"}
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "openai",
+    "python-dotenv",
+    "pydantic"
+]
+
+[project.urls]
+Homepage = "https://github.com/Muhammad-Abdullah-Nizami/GentleAgents"
+Documentation = "https://github.com/Muhammad-Abdullah-Nizami/GentleAgents"
+Repository = "https://github.com/Muhammad-Abdullah-Nizami/GentleAgents"
