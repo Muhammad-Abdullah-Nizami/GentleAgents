@@ -6,3 +6,4 @@ venv/*
 .env
 gentleagents.egg-info/
 build/
+dist/
