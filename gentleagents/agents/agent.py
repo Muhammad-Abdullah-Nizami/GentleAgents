@@ -56,8 +56,9 @@ class Agent:
             self.chat_history.append({"role": "assistant", "content": message.content if message.content else ""})
 
             if not message.tool_calls:
-                return message.content  
-
+                print(response.choices[0].message.content)
+                return response.choices[0].message.content
+                
             responses = []
             for tool_call in message.tool_calls:
                 function_name = tool_call.function.name
