@@ -44,7 +44,7 @@ class Agent:
 
             try:
                 response = interact(
-                    system_prompt=f"You are {self.name}, a {self.role}.",
+                    system_prompt=f"You are {self.name}, a {self.role}. If asked for your available tools, do not call them. Instead, simply list your available tools.",
                     user_message=user_message,
                     tools=tools_spec,
                     model=self.model
