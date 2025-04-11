@@ -44,7 +44,8 @@ GROQ_API_URL="https://api.groq.com/openai/v1"
 ## **Set up your "tools" (any Python functions)**
 Make sure to include the function doc strings as that helps the Agent's performance
 ```python
-
+from gentleagents import Agent, Team
+import os
 #Define your functions
 
 #example tool 1
